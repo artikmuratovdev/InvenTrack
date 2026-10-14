@@ -58,7 +58,7 @@ function mock(s, x, y, w, h, kind) {
   await iconCircle(s, fa.FaBoxes, 0.7, 0.7, 0.9, P.amber);
   T(s,"InvenTrack",{x:0.7,y:1.8,w:7,h:1,fontFace:"Cambria",bold:true,fontSize:60,color:P.white});
   T(s,"Har bir jihoz hisobda, har bir o'zgarish tarixda.",{x:0.7,y:2.9,w:7,h:0.6,fontSize:22,italic:true,color:"BFE6E4"});
-  T(s,[{text:"Jamoa: 404 Found",options:{bold:true,breakLine:true}},{text:"A'zo 1  ·  A'zo 2  ·  A'zo 3  ·  A'zo 4",options:{}}],{x:0.7,y:4.2,w:7,h:0.8,fontSize:16,color:P.white});
+  T(s,[{text:"Jamoa: 404 Found",options:{bold:true,breakLine:true}},{text:"Boynazarov N. · Artikmuratov D. · Ro’ziboyev G. · Yo’ldosheva S. · Eshnazarova F. · Tursunov A.",options:{fontSize:13}}],{x:0.7,y:4.2,w:8.6,h:0.8,fontSize:16,color:P.white});
   s.addNotes("Assalomu alaykum! Biz 404 Found jamoasimiz. Bugun sizga InvenTrack — tashkilotdagi kompyuter va texnik vositalarni elektron hisobga olish tizimini taqdim etamiz. Shiorimiz: har bir jihoz hisobda, har bir o'zgarish tarixda.");
 
   // 2 Muammo
@@ -192,14 +192,21 @@ function mock(s, x, y, w, h, kind) {
   s.addNotes("Natijada tashkilot jihozlarining yagona, xavfsiz va yangilanib turadigan hisobi paydo bo'ladi. Kelajakda QR skaner, bildirishnomalar va mobil ilova qo'shishni rejalashtirganmiz.");
 
   // 15 Jamoa
-
   s = pres.addSlide(); s.background={color:P.white}; title(s,"Jamoa: 404 Found");
-  for (let i=0;i<4;i++){ const x=0.6+i*2.3; card(s,x,1.6,2.1,2.6);
-    await iconCircle(s,fa.FaUser,x+0.55,1.85,1.0,i%2?P.teal2:P.teal);
-    T(s,"A'zo "+(i+1),{x:x+0.1,y:3.05,w:1.9,h:0.45,fontSize:18,bold:true,color:P.dark,align:"center"});
-    T(s,"Vazifasi",{x:x+0.1,y:3.5,w:1.9,h:0.4,fontSize:14,color:P.mute,align:"center"}); }
-  T(s,"Hamkorlikka va pilot sinovga tayyormiz",{x:0.6,y:4.5,w:8.8,h:0.5,fontSize:20,bold:true,color:P.teal});
-  s.addNotes("Jamoamiz 404 Found: dasturlash, dizayn va ma'lumotlar bo'yicha mutaxassislar. Biz tizimni pilot sifatida bitta bo'limda sinab ko'rishga tayyormiz.");
+  const tm = [
+    ["Boynazarov Nurmuhammad","Project Manager","Reja, vazifalar taqsimoti, muddat va taqdimot",fa.FaTasks],
+    ["Dalerbek Artikmuratov","Full-Stack va AI Engineer","Arxitektura, integratsiya, AI yordamchi",fa.FaRobot],
+    ["Ro’ziboyev G’olibjon","Backend Developer","API, ma'lumotlar bazasi, xavfsizlik",fa.FaServer],
+    ["Yo’ldosheva Sanobar","Frontend Developer","Interfeys, dashboard, responsive dizayn",fa.FaLaptopCode],
+    ["Eshnazarova Feruza","Data Analyst","Hisobotlar, ko'rsatkichlar, ma'lumot tahlili",fa.FaChartBar],
+    ["Tursunov Atham","QA va hujjatlar","Testlash, foydalanuvchi qo'llanmasi, demo ma'lumotlar",fa.FaClipboardCheck],
+  ];
+  for (let i=0;i<6;i++){ const x=0.6+(i%3)*3.0, y=1.4+Math.floor(i/3)*1.95; card(s,x,y,2.8,1.75);
+    await iconCircle(s,tm[i][3],x+0.2,y+0.2,0.6,i%2?P.teal2:P.teal);
+    T(s,tm[i][0],{x:x+0.95,y:y+0.15,w:1.75,h:0.7,fontSize:13,bold:true,color:P.dark,valign:"middle"});
+    T(s,tm[i][1],{x:x+0.2,y:y+0.95,w:2.45,h:0.3,fontSize:13,bold:true,color:P.teal});
+    T(s,tm[i][2],{x:x+0.2,y:y+1.25,w:2.45,h:0.45,fontSize:11,color:P.mute}); }
+  s.addNotes("Jamoamiz 404 Found, olti kishidan iborat. Nurmuhammad loyihani boshqaradi, Dalerbek arxitektura va AI yordamchi ustida ishladi, G'olibjon backend va xavfsizlikni, Sanobar frontendni qurdi, Feruza hisobot va ko'rsatkichlarni tahlil qildi, Atham testlash va hujjatlarni yuritdi. Biz tizimni pilot sifatida bitta bo'limda sinab ko'rishga tayyormiz.");
 
   // 16 Yakun
   s = pres.addSlide(); s.background={color:P.dark};
@@ -209,7 +216,7 @@ function mock(s, x, y, w, h, kind) {
   T(s,"InvenTrack · 404 Found",{x:0.8,y:4.4,w:8.4,h:0.4,fontSize:16,color:"BFE6E4",align:"center"});
   s.addNotes("E'tiboringiz uchun rahmat! Savollaringiz bo'lsa, javob beramiz.");
 
-  await pres.writeFile({ fileName:"S:/InvenTrack/presentation/InvenTrack-Pitch.pptx" });
-  await applyTheme("S:/InvenTrack/presentation/InvenTrack-Pitch.pptx", THEME);
+  await pres.writeFile({ fileName:"S:/InvenTrack/presentation/InvenTrack-Pitch-v2.pptx" });
+  await applyTheme("S:/InvenTrack/presentation/InvenTrack-Pitch-v2.pptx", THEME);
   console.log("ok");
 })();
