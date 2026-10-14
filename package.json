@@ -1,10 +1,14 @@
 {
   "name": "inventrack",
   "private": true,
-  "workspaces": ["server"],
+  "workspaces": ["server", "client"],
   "scripts": {
-    "dev": "npm run dev -w server",
+    "dev": "concurrently -n server,client -c cyan,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
     "test": "npm test -w server",
+    "build": "npm run build -w client",
     "db:setup": "npm run db:setup -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1"
   }
 }

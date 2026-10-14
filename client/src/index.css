@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #0e7c86;
+  --color-brand-dark: #0b3c49;
+}
+
+@media print {
+  body { background: white; }
+}
