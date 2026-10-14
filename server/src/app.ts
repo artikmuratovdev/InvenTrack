@@ -9,6 +9,7 @@ import { repairsRouter } from "./routes/repairs.js";
 import { departmentsRouter, roomsRouter, typesRouter } from "./routes/reference.js";
 import { usersRouter } from "./routes/users.js";
 import { reportsRouter } from "./routes/reports.js";
+import { aiRouter } from "./routes/ai.js";
 
 export function createApp() {
   const app = express();
@@ -29,6 +30,7 @@ export function createApp() {
   app.use("/api/equipment-types", typesRouter);
   app.use("/api/users", usersRouter);
   app.use("/api/reports", reportsRouter);
+  app.use("/api/ai", aiRouter);
 
   app.use((_req, res) => res.status(404).json({ message: "Yo'l topilmadi" }));
   app.use(errorHandler);
