@@ -216,7 +216,7 @@ function mock(s, x, y, w, h, kind) {
   T(s,"InvenTrack · 404 Found",{x:0.8,y:4.4,w:8.4,h:0.4,fontSize:16,color:"BFE6E4",align:"center"});
   s.addNotes("E'tiboringiz uchun rahmat! Savollaringiz bo'lsa, javob beramiz.");
 
-  await pres.writeFile({ fileName:"S:/InvenTrack/presentation/InvenTrack-Pitch-v2.pptx" });
-  await applyTheme("S:/InvenTrack/presentation/InvenTrack-Pitch-v2.pptx", THEME);
+  await pres.writeFile({ fileName:"S:/InvenTrack/presentation/InvenTrack-Pitch.pptx" });
+  await applyTheme("S:/InvenTrack/presentation/InvenTrack-Pitch.pptx", THEME);
   console.log("ok");
 })();
