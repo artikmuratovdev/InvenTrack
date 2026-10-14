@@ -10,7 +10,7 @@ const THEME = { name: "InvenTrack", headFontFace: "Cambria", bodyFontFace: "Cali
 const P = { dark:"0B3C49", teal:"0E7C86", teal2:"14A3A8", light:"E8F4F3", amber:"F2A541", red:"C8553D", green:"3C9D6B", text:"1B2B34", mute:"5E7480", white:"FFFFFF" };
 
 const pres = new pptxgen(); pres.layout = "LAYOUT_16x9"; pres.theme = { headFontFace:"Cambria", bodyFontFace:"Calibri" };
-pres.title = "InvenTrack"; pres.author = "404 Found";
+pres.title = "InvenTrack"; pres.author = "404";
 
 async function ic(Comp, color="FFFFFF") {
   const svg = RDS.renderToStaticMarkup(React.createElement(Comp, { color:"#"+color, size:256 }));
@@ -58,8 +58,8 @@ function mock(s, x, y, w, h, kind) {
   await iconCircle(s, fa.FaBoxes, 0.7, 0.7, 0.9, P.amber);
   T(s,"InvenTrack",{x:0.7,y:1.8,w:7,h:1,fontFace:"Cambria",bold:true,fontSize:60,color:P.white});
   T(s,"Har bir jihoz hisobda, har bir o'zgarish tarixda.",{x:0.7,y:2.9,w:7,h:0.6,fontSize:22,italic:true,color:"BFE6E4"});
-  T(s,[{text:"Jamoa: 404 Found",options:{bold:true,breakLine:true}},{text:"Boynazarov N. · Artikmuratov D. · Ro’ziboyev G. · Yo’ldosheva S. · Eshnazarova F. · Tursunov A.",options:{fontSize:13}}],{x:0.7,y:4.2,w:8.6,h:0.8,fontSize:16,color:P.white});
-  s.addNotes("Assalomu alaykum! Biz 404 Found jamoasimiz. Bugun sizga InvenTrack — tashkilotdagi kompyuter va texnik vositalarni elektron hisobga olish tizimini taqdim etamiz. Shiorimiz: har bir jihoz hisobda, har bir o'zgarish tarixda.");
+  T(s,[{text:"Jamoa: 404",options:{bold:true,breakLine:true}},{text:"Boynazarov N. · Artikmuratov D. · Ro’ziboyev G. · Yo’ldosheva S. · Eshnazarova F. · Tursunov A.",options:{fontSize:13}}],{x:0.7,y:4.2,w:8.6,h:0.8,fontSize:16,color:P.white});
+  s.addNotes("Assalomu alaykum! Biz 404 jamoasimiz. Bugun sizga InvenTrack — tashkilotdagi kompyuter va texnik vositalarni elektron hisobga olish tizimini taqdim etamiz. Shiorimiz: har bir jihoz hisobda, har bir o'zgarish tarixda.");
 
   // 2 Muammo
   s = pres.addSlide(); s.background={color:P.white}; title(s,"Muammo");
@@ -192,7 +192,7 @@ function mock(s, x, y, w, h, kind) {
   s.addNotes("Natijada tashkilot jihozlarining yagona, xavfsiz va yangilanib turadigan hisobi paydo bo'ladi. Kelajakda QR skaner, bildirishnomalar va mobil ilova qo'shishni rejalashtirganmiz.");
 
   // 15 Jamoa
-  s = pres.addSlide(); s.background={color:P.white}; title(s,"Jamoa: 404 Found");
+  s = pres.addSlide(); s.background={color:P.white}; title(s,"Jamoa: 404");
   const tm = [
     ["Boynazarov Nurmuhammad","Project Manager","Reja, vazifalar taqsimoti, muddat va taqdimot",fa.FaTasks],
     ["Dalerbek Artikmuratov","Full-Stack va AI Engineer","Arxitektura, integratsiya, AI yordamchi",fa.FaRobot],
@@ -206,14 +206,14 @@ function mock(s, x, y, w, h, kind) {
     T(s,tm[i][0],{x:x+0.95,y:y+0.15,w:1.75,h:0.7,fontSize:13,bold:true,color:P.dark,valign:"middle"});
     T(s,tm[i][1],{x:x+0.2,y:y+0.95,w:2.45,h:0.3,fontSize:13,bold:true,color:P.teal});
     T(s,tm[i][2],{x:x+0.2,y:y+1.25,w:2.45,h:0.45,fontSize:11,color:P.mute}); }
-  s.addNotes("Jamoamiz 404 Found, olti kishidan iborat. Nurmuhammad loyihani boshqaradi, Dalerbek arxitektura va AI yordamchi ustida ishladi, G'olibjon backend va xavfsizlikni, Sanobar frontendni qurdi, Feruza hisobot va ko'rsatkichlarni tahlil qildi, Atham testlash va hujjatlarni yuritdi. Biz tizimni pilot sifatida bitta bo'limda sinab ko'rishga tayyormiz.");
+  s.addNotes("Jamoamiz 404, olti kishidan iborat. Nurmuhammad loyihani boshqaradi, Dalerbek arxitektura va AI yordamchi ustida ishladi, G'olibjon backend va xavfsizlikni, Sanobar frontendni qurdi, Feruza hisobot va ko'rsatkichlarni tahlil qildi, Atham testlash va hujjatlarni yuritdi. Biz tizimni pilot sifatida bitta bo'limda sinab ko'rishga tayyormiz.");
 
   // 16 Yakun
   s = pres.addSlide(); s.background={color:P.dark};
   s.addShape(pres.shapes.OVAL,{x:-1.5,y:3.2,w:4.5,h:4.5,fill:{color:P.teal},line:{color:P.teal}});
   T(s,"E'tiboringiz uchun rahmat!",{x:0.8,y:1.6,w:8.4,h:1.0,fontFace:"Cambria",bold:true,fontSize:44,color:P.white,align:"center"});
   T(s,"Savol-javob",{x:0.8,y:2.9,w:8.4,h:0.6,fontSize:24,color:P.amber,align:"center"});
-  T(s,"InvenTrack · 404 Found",{x:0.8,y:4.4,w:8.4,h:0.4,fontSize:16,color:"BFE6E4",align:"center"});
+  T(s,"InvenTrack · 404",{x:0.8,y:4.4,w:8.4,h:0.4,fontSize:16,color:"BFE6E4",align:"center"});
   s.addNotes("E'tiboringiz uchun rahmat! Savollaringiz bo'lsa, javob beramiz.");
 
   await pres.writeFile({ fileName:"S:/InvenTrack/presentation/InvenTrack-Pitch.pptx" });

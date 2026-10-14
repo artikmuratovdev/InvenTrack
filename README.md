@@ -2,7 +2,7 @@
 
 > Har bir jihoz hisobda, har bir o'zgarish tarixda.
 
-Tashkilotdagi kompyuter va texnik vositalarni elektron hisobga olish web-tizimi. Jamoa: **404 Found**.
+Tashkilotdagi kompyuter va texnik vositalarni elektron hisobga olish web-tizimi. Jamoa: **404**.
 
 ## Imkoniyatlar
 
