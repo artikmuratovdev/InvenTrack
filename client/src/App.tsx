@@ -1,16 +1,17 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth, type User } from "./lib/auth";
 import Layout from "./components/Layout";
 import { Spinner } from "./components/ui";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import EquipmentList from "./pages/EquipmentList";
-import EquipmentDetail from "./pages/EquipmentDetail";
-import EquipmentForm from "./pages/EquipmentForm";
-import Repairs from "./pages/Repairs";
-import Reports from "./pages/Reports";
-import Users from "./pages/Users";
-import References from "./pages/References";
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const EquipmentList = lazy(() => import("./pages/EquipmentList"));
+const EquipmentDetail = lazy(() => import("./pages/EquipmentDetail"));
+const EquipmentForm = lazy(() => import("./pages/EquipmentForm"));
+const Repairs = lazy(() => import("./pages/Repairs"));
+const Reports = lazy(() => import("./pages/Reports"));
+const Users = lazy(() => import("./pages/Users"));
+const References = lazy(() => import("./pages/References"));
 
 function Protected({ roles }: { roles?: User["role"][] }) {
   const { user, loading } = useAuth();
@@ -20,17 +21,21 @@ function Protected({ roles }: { roles?: User["role"][] }) {
   return <Layout />;
 }
 
+
 export default function App() {
   return (
+    <Suspense fallback={<Spinner />}>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<Protected />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/equipment" element={<EquipmentList />} />
         <Route path="/equipment/:id" element={<EquipmentDetail />} />
-        <Route path="/equipment/:id/edit" element={<EquipmentForm />} />
-        <Route path="/repairs" element={<Repairs />} />
         <Route path="/reports" element={<Reports />} />
+      </Route>
+      <Route element={<Protected roles={["ADMIN", "RESPONSIBLE"]} />}>
+        <Route path="/repairs" element={<Repairs />} />
+        <Route path="/equipment/:id/edit" element={<EquipmentForm />} />
       </Route>
       <Route element={<Protected roles={["ADMIN"]} />}>
         <Route path="/equipment/new" element={<EquipmentForm />} />
@@ -39,5 +44,6 @@ export default function App() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
   );
 }

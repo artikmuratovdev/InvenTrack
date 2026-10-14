@@ -48,7 +48,7 @@ export default function Dashboard() {
             <h2 className="mb-2 font-semibold">Texnik holat bo'yicha</h2>
             <ResponsiveContainer width="100%" height={260}>
               <PieChart>
-                <Pie data={cond} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} label>
+                <Pie isAnimationActive={false} data={cond} dataKey="value" nameKey="name" innerRadius={55} outerRadius={90} label>
                   {cond.map((c) => <Cell key={c.name} fill={c.color} />)}
                 </Pie>
                 <Tooltip />
@@ -63,7 +63,7 @@ export default function Dashboard() {
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis allowDecimals={false} />
                 <Tooltip />
-                <Bar dataKey="value" name="Soni">
+                <Bar dataKey="value" name="Soni" isAnimationActive={false}>
                   {usage.map((c) => <Cell key={c.name} fill={c.color} />)}
                 </Bar>
               </BarChart>

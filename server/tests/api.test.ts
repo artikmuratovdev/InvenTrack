@@ -138,3 +138,37 @@ describe("hisobot va foydalanuvchilar", () => {
     expect((await request(app).get("/api/equipment").set(auth(employee))).status).toBe(401);
   });
 });
+
+describe("chekka holatlar", () => {
+  let id = 0;
+  it("hisobdan chiqarilganda foydalanish holati ham o'zgaradi", async () => {
+    id = (await request(app).post("/api/equipment").set(auth(admin)).send({ name: "Eski monitor", typeId, usageStatus: "IN_USE" })).body.id;
+    const r = await request(app).patch(`/api/equipment/${id}`).set(auth(admin)).send({ condition: "WRITTEN_OFF" });
+    expect(r.body).toMatchObject({ condition: "WRITTEN_OFF", usageStatus: "WRITTEN_OFF" });
+  });
+  it("ta'mir holatini qo'lda o'rnatib bo'lmaydi", async () => {
+    const eq = (await request(app).post("/api/equipment").set(auth(admin)).send({ name: "Yangi UPS", typeId })).body.id;
+    const r = await request(app).patch(`/api/equipment/${eq}`).set(auth(admin)).send({ usageStatus: "IN_REPAIR" });
+    expect(r.status).toBe(400);
+  });
+  it("arxivlangan jihoz ro'yxatdan chiqadi va tahrirlanmaydi", async () => {
+    expect((await request(app).post(`/api/equipment/${id}/archive`).set(auth(admin))).status).toBe(200);
+    const list = await request(app).get("/api/equipment?search=Eski").set(auth(admin));
+    expect(list.body.total).toBe(0);
+    const archived = await request(app).get("/api/equipment?search=Eski&archived=true").set(auth(admin));
+    expect(archived.body.total).toBe(1);
+    expect((await request(app).patch(`/api/equipment/${id}`).set(auth(admin)).send({ notes: "x" })).status).toBe(400);
+  });
+  it("noto'g'ri qiymatlar o'zbekcha xabar bilan rad etiladi", async () => {
+    const r = await request(app).post("/api/equipment").set(auth(admin)).send({ name: "Printer", typeId, price: -5, condition: "BAD" });
+    expect(r.status).toBe(400);
+    const msgs = r.body.errors.map((e: any) => e.message).join("|");
+    expect(msgs).toContain("Ruxsat etilgan qiymatlar");
+    expect(msgs).toContain("dan kam bo'lmasligi kerak");
+  });
+  it("mavjud bo'lmagan tur 400 qaytaradi", async () => {
+    const r = await request(app).post("/api/equipment").set(auth(admin)).send({ name: "Printer", typeId: 99999 });
+    expect(r.status).toBe(400);
+    expect(r.body.message).toBe("Jihoz turi topilmadi");
+  });
+});

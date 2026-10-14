@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import ErrorBoundary from "./ErrorBoundary";
 import { useAuth } from "../lib/auth";
 import { ROLE } from "../lib/labels";
 
@@ -37,7 +38,9 @@ export default function Layout() {
         </div>
       </aside>
       <main className="min-w-0 flex-1 p-4 md:p-8">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );
