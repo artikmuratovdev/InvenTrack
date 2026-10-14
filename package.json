@@ -1,0 +1,10 @@
+{
+  "name": "inventrack",
+  "private": true,
+  "workspaces": ["server"],
+  "scripts": {
+    "dev": "npm run dev -w server",
+    "test": "npm test -w server",
+    "db:setup": "npm run db:setup -w server"
+  }
+}

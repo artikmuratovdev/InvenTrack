@@ -1,0 +1,16 @@
+# PostgreSQL ishga tushirish: docker compose up -d
+# Keyin server/prisma/schema.prisma da provider = "postgresql" qiling va server/.env da DATABASE_URL ni yozing.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-inventrack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD .env da berilishi shart}
+      POSTGRES_DB: ${POSTGRES_DB:-inventrack}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
