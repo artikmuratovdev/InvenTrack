@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import ErrorBoundary from "./ErrorBoundary";
+import ChatWidget from "./ChatWidget";
 import { useAuth } from "../lib/auth";
 import { ROLE } from "../lib/labels";
 
@@ -42,6 +43,7 @@ export default function Layout() {
           <Outlet />
         </ErrorBoundary>
       </main>
+      <ChatWidget />
     </div>
   );
 }
