@@ -108,10 +108,12 @@ function mock(s, x, y, w, h, kind) {
 
   // 7 Demo
   s = pres.addSlide(); s.background={color:P.white}; title(s,"Demo: asosiy ekranlar");
-  const dm = [["dash","Dashboard"],["list","Jihozlar ro'yxati"],["card","Jihoz kartochkasi"],["form","Qo'shish formasi"]];
-  dm.forEach((d,i)=>{ const x=0.6+(i%2)*4.5, y=1.3+Math.floor(i/2)*2.0; mock(s,x,y,4.2,1.65,d[0]);
-    T(s,d[1],{x,y:y+1.7,w:4.2,h:0.28,fontSize:13,color:P.mute,align:"center"}); });
-  s.addNotes("Bu ekranlarning maketi. Ilova tayyor bo'lgach, shu yerga haqiqiy skrinshotlar qo'yiladi. Dashboard, ro'yxat, kartochka va forma.");
+  const dm = [["dashboard.png","Dashboard"],["list.png","Jihozlar ro'yxati"],["detail.png","Jihoz kartochkasi"],["form.png","Qo'shish formasi"]];
+  dm.forEach((d,i)=>{ const x=0.6+(i%2)*4.5, y=1.25+Math.floor(i/2)*2.1;
+    s.addShape(pres.shapes.RECTANGLE,{x:x-0.03,y:y-0.03,w:4.26,h:1.56,fill:{color:"B8CED3"},line:{color:"B8CED3"}});
+    s.addImage({path:"screenshots/"+d[0],x,y,w:4.2,h:1.5,sizing:{type:"cover",w:4.2,h:1.5}});
+    T(s,d[1],{x,y:y+1.58,w:4.2,h:0.3,fontSize:13,color:P.mute,align:"center"}); });
+  s.addNotes("Bu ilovaning haqiqiy skrinshotlari: dashboard, jihozlar ro'yxati, jihoz kartochkasi QR-kod va tarix bilan, hamda qo'shish formasi. Ma'lumotlar sinov uchun.");
 
   // 8 Tarix
   s = pres.addSlide(); s.background={color:P.white}; title(s,"Jihoz tarixi");
@@ -170,12 +172,14 @@ function mock(s, x, y, w, h, kind) {
   // 13 Hisobot
   s = pres.addSlide(); s.background={color:P.white}; title(s,"Inventarizatsiya hisoboti");
   const flt = ["Xona","Bo'lim","Tur","Holat"];
-  flt.forEach((f,i)=>{ s.addShape(pres.shapes.ROUNDED_RECTANGLE,{x:0.6+i*1.35,y:1.5,w:1.25,h:0.5,rectRadius:0.1,fill:{color:P.light},line:{color:P.teal}});
-    T(s,f,{x:0.6+i*1.35,y:1.5,w:1.25,h:0.5,fontSize:15,bold:true,color:P.teal,align:"center",valign:"middle"}); });
-  T(s,"Filtrlang → ko'ring → yuklab oling",{x:0.6,y:2.4,w:7,h:0.5,fontSize:20,color:P.dark});
-  await iconCircle(s,fa.FaFileExcel,0.6,3.2,1.1,P.green); T(s,"Excel (.xlsx)",{x:1.9,y:3.2,w:2,h:1.1,fontSize:20,bold:true,color:P.dark,valign:"middle"});
-  await iconCircle(s,fa.FaFilePdf,4.1,3.2,1.1,P.red); T(s,"PDF",{x:5.4,y:3.2,w:1.2,h:1.1,fontSize:20,bold:true,color:P.dark,valign:"middle"});
-  await iconCircle(s,fa.FaPrint,6.9,3.2,1.1,P.teal); T(s,"Chop etish",{x:8.2,y:3.2,w:1.5,h:1.1,fontSize:20,bold:true,color:P.dark,valign:"middle"});
+  flt.forEach((f,i)=>{ s.addShape(pres.shapes.ROUNDED_RECTANGLE,{x:0.6+(i%2)*1.2,y:1.5+Math.floor(i/2)*0.6,w:1.1,h:0.5,rectRadius:0.1,fill:{color:P.light},line:{color:P.teal}});
+    T(s,f,{x:0.6+(i%2)*1.2,y:1.5+Math.floor(i/2)*0.6,w:1.1,h:0.5,fontSize:15,bold:true,color:P.teal,align:"center",valign:"middle"}); });
+  T(s,"Filtrlang → ko'ring → yuklab oling",{x:0.6,y:2.75,w:4.4,h:0.4,fontSize:16,color:P.dark});
+  s.addShape(pres.shapes.RECTANGLE,{x:5.17,y:1.47,w:4.26,h:3.26,fill:{color:"B8CED3"},line:{color:"B8CED3"}});
+  s.addImage({path:"screenshots/report.png",x:5.2,y:1.5,w:4.2,h:3.2,sizing:{type:"cover",w:4.2,h:3.2}});
+  await iconCircle(s,fa.FaFileExcel,0.6,3.3,0.8,P.green); T(s,"Excel (.xlsx)",{x:1.6,y:3.3,w:2.5,h:0.8,fontSize:16,bold:true,color:P.dark,valign:"middle"});
+  await iconCircle(s,fa.FaFilePdf,0.6,4.2,0.8,P.red); T(s,"PDF",{x:1.6,y:4.2,w:2.5,h:0.8,fontSize:16,bold:true,color:P.dark,valign:"middle"});
+  await iconCircle(s,fa.FaPrint,3.0,3.75,0.8,P.teal); T(s,"Chop etish",{x:3.9,y:3.75,w:1.2,h:0.8,fontSize:16,bold:true,color:P.dark,valign:"middle"});
   s.addNotes("Hisobotni xona, bo'lim, tur va holat bo'yicha filtrlash mumkin. Natija Excel yoki PDF'ga yuklanadi, chop etishga qulay ko'rinishi ham bor.");
 
   // 14 Natija
