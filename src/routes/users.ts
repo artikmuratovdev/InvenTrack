@@ -2,7 +2,8 @@ import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { prisma } from "../db.js";
 import { HttpError, requireRole, validate, wrap } from "../middleware.js";
-import { passwordResetSchema, userCreateSchema, userUpdateSchema } from "../schemas.js";
+import { passwordResetSchema, searchQuerySchema, userCreateSchema, userListQuerySchema, userUpdateSchema } from "../schemas.js";
+import { contains, paginate } from "../services/query.js";
 
 export const usersRouter = Router();
 
@@ -16,20 +17,28 @@ const idOf = (v: string) => {
 // Mas'ul shaxsni tanlash uchun ro'yxat hamma rolga ochiq, faqat ism (email/rolsiz)
 usersRouter.get(
   "/options",
-  wrap(async (_req, res) =>
-    res.json(
-      await prisma.user.findMany({
-        where: { isActive: true },
-        select: { id: true, fullName: true },
-        orderBy: { fullName: "asc" },
-      }),
-    ),
-  ),
+  validate(searchQuerySchema, "query"),
+  wrap(async (req, res) => {
+    const { search, ...page } = req.query as any;
+    const where: any = { isActive: true };
+    if (search) where.fullName = contains(search);
+    res.json(await paginate(prisma.user, { where, select: { id: true, fullName: true }, orderBy: { fullName: "asc" } }, page));
+  }),
 );
 
 usersRouter.use(requireRole("ADMIN"));
 
-usersRouter.get("/", wrap(async (_req, res) => res.json(await prisma.user.findMany({ select: PUBLIC, orderBy: { id: "asc" } }))));
+usersRouter.get(
+  "/",
+  validate(userListQuerySchema, "query"),
+  wrap(async (req, res) => {
+    const { search, ...rest } = req.query as any;
+    const { page, pageSize, ...filters } = rest;
+    const where: any = { ...filters };
+    if (search) where.OR = [{ fullName: contains(search) }, { email: contains(search) }];
+    res.json(await paginate(prisma.user, { where, select: PUBLIC, orderBy: { id: "asc" } }, { page, pageSize }));
+  }),
+);
 
 usersRouter.post(
   "/",

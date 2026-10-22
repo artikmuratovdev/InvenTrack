@@ -14,6 +14,7 @@ repairsRouter.get(
     const q = req.query as any;
     const where: any = {};
     if (q.open !== undefined) where.returnedDate = q.open ? null : { not: null };
+    if (q.equipmentId) where.equipmentId = q.equipmentId;
     if (req.user!.role === "RESPONSIBLE") where.equipment = { responsibleUserId: req.user!.id };
     const [total, items] = await Promise.all([
       prisma.repair.count({ where }),

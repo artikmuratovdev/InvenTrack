@@ -68,7 +68,7 @@ describe("jihoz", () => {
     const r = await request(app).patch(`/api/equipment/${id}`).set(auth(admin)).send({ roomId: room2.id });
     expect(r.status).toBe(200);
     const h = await request(app).get(`/api/equipment/${id}/history`).set(auth(admin));
-    const moved = h.body.find((x: any) => x.action === "MOVED");
+    const moved = h.body.items.find((x: any) => x.action === "MOVED");
     expect(moved).toMatchObject({ oldValue: "101", newValue: "202" });
   });
   it("mas'ul faqat o'z jihozining holatini o'zgartiradi", async () => {

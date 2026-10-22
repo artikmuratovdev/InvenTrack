@@ -4,10 +4,10 @@ import { prisma } from "../db.js";
 import { HttpError, requireRole, validate, wrap } from "../middleware.js";
 import {
   equipmentCreateSchema, equipmentQuerySchema, equipmentUpdateSchema,
-  repairCreateSchema,
+  pageQuerySchema, repairCreateSchema,
 } from "../schemas.js";
 import { createEquipment, setArchived, updateEquipment } from "../services/equipment.js";
-import { buildWhere, equipmentInclude } from "../services/query.js";
+import { buildWhere, equipmentInclude, paginate } from "../services/query.js";
 import { sendToRepair } from "../services/repairs.js";
 
 export const equipmentRouter = Router();
@@ -89,24 +89,31 @@ equipmentRouter.post(
 
 equipmentRouter.get(
   "/:id/history",
+  validate(pageQuerySchema, "query"),
   wrap(async (req, res) => {
     const id = idParam(req.params.id);
     await loadVisible(req, id);
-    const items = await prisma.equipmentHistory.findMany({
-      where: { equipmentId: id },
-      include: { changedBy: { select: { id: true, fullName: true } } },
-      orderBy: [{ changedAt: "desc" }, { id: "desc" }],
-    });
-    res.json(items);
+    res.json(
+      await paginate(
+        prisma.equipmentHistory,
+        {
+          where: { equipmentId: id },
+          include: { changedBy: { select: { id: true, fullName: true } } },
+          orderBy: [{ changedAt: "desc" }, { id: "desc" }],
+        },
+        req.query as any,
+      ),
+    );
   }),
 );
 
 equipmentRouter.get(
   "/:id/repairs",
+  validate(pageQuerySchema, "query"),
   wrap(async (req, res) => {
     const id = idParam(req.params.id);
     await loadVisible(req, id);
-    res.json(await prisma.repair.findMany({ where: { equipmentId: id }, orderBy: { sentDate: "desc" } }));
+    res.json(await paginate(prisma.repair, { where: { equipmentId: id }, orderBy: { sentDate: "desc" } }, req.query as any));
   }),
 );
 

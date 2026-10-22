@@ -35,3 +35,18 @@ export const equipmentInclude = {
   room: { include: { department: true } },
   responsible: { select: { id: true, fullName: true } },
 } satisfies Prisma.EquipmentInclude;
+
+// Ro'yxat javobi: { items, total, page, pageSize }. count va findMany birga ishlaydi.
+export async function paginate<T>(
+  model: { count(a: { where?: any }): Promise<number>; findMany(a: any): Promise<T[]> },
+  args: { where?: any; include?: any; select?: any; orderBy?: any },
+  q: { page: number; pageSize: number },
+) {
+  const [total, items] = await Promise.all([
+    model.count({ where: args.where }),
+    model.findMany({ ...args, skip: (q.page - 1) * q.pageSize, take: q.pageSize }),
+  ]);
+  return { items, total, page: q.page, pageSize: q.pageSize };
+}
+
+export const contains = (v: string) => ({ contains: v, mode: "insensitive" as const });

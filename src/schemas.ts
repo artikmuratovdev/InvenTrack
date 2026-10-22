@@ -90,10 +90,23 @@ export const repairReturnSchema = z.object({
   condition: z.enum(["GOOD", "FAIR", "BROKEN"]).default("GOOD"),
 });
 
-export const repairListQuerySchema = z.object({
-  open: boolStr.optional(),
+export const pageQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
+});
+
+export const repairListQuerySchema = pageQuerySchema.extend({
+  open: boolStr.optional(),
+  equipmentId: intQ.optional(),
+});
+
+const searchQ = z.string().trim().max(100).optional();
+export const searchQuerySchema = pageQuerySchema.extend({ search: searchQ });
+export const roomListQuerySchema = searchQuerySchema.extend({ departmentId: intQ.optional() });
+export const userListQuerySchema = searchQuerySchema.extend({
+  role: z.enum(ROLES).optional(),
+  departmentId: intQ.optional(),
+  isActive: boolStr.optional(),
 });
 
 export const userCreateSchema = z.object({
