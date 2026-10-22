@@ -1,3 +1,4 @@
+import { title } from "process";
 import { CONDITIONS, ROLES, USAGE_STATUSES } from "./constants.js";
 
 const ref = (n: string) => ({ $ref: `#/components/schemas/${n}` });
@@ -39,7 +40,7 @@ const reference = (path: string, tag: string, schema: string, extra: object[] = 
 export const openapi = {
   openapi: "3.0.3",
   info: { title: "InvenTrack API", version: "1.0.0", description: "Jihozlar inventarizatsiyasi tizimi. /auth/login orqali token oling va «Authorize» tugmasiga kiriting." },
-  servers: [{ url: "/api" }],
+  servers: [{ description: "Backend url", url: "/api" }],
   security: [{ bearerAuth: [] }],
   tags: ["Auth", "Equipment", "Repairs", "Departments", "Rooms", "Equipment types", "Users", "Reports", "AI"].map((name) => ({ name })),
   components: {
