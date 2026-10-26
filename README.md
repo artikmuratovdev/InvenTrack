@@ -2,64 +2,70 @@
 
 > Har bir jihoz hisobda, har bir o'zgarish tarixda.
 
-Tashkilotdagi kompyuter va texnik vositalarni elektron hisobga olish web-tizimi. Jamoa: **404**.
+Tashkilotdagi kompyuter va texnik vositalarni elektron hisobga olish tizimining **backend (REST API)** qismi. Jamoa: **404**.
 
 ## Imkoniyatlar
 
 - Jihozni qo'shish, tahrirlash, ko'rish, arxivlash; avtomatik inventar raqam (`INV-2026-0001`)
 - Tur, xona/bo'lim, mas'ul shaxs, texnik holat va foydalanish holati
 - Ta'mirga yuborish va qaytarish qaydi (sana, sabab, ta'mirlovchi, narx, natija)
-- Har bir o'zgarishning tarixi (kim, qachon, nima o'zgargan) timeline ko'rinishida
+- Har bir o'zgarishning tarixi (kim, qachon, nima o'zgargan)
 - Dashboard, qidiruv, filtr, sahifalash, QR-kod
-- Inventarizatsiya hisoboti: Excel (.xlsx), PDF, chop etish
+- Inventarizatsiya hisoboti: Excel (.xlsx), PDF
 - Rollar: Administrator, Mas'ul shaxs, Xodim
-- Mobil qurilmada ham qulay (responsive)
+- AI yordamchi (OpenRouter orqali, faqat o'qish): `POST /api/ai/chat`
+- Interaktiv API hujjati: Swagger UI (`/api-docs`)
 
 ## Texnologiyalar
 
 | Qism | Stek |
 |---|---|
-| Frontend | React, TypeScript, Vite, Tailwind CSS, React Router, TanStack Query, Recharts |
 | Backend | Node.js, Express, TypeScript, Prisma ORM, Zod |
-| Baza | SQLite (standart) yoki PostgreSQL |
-| Xavfsizlik | JWT, bcrypt, Helmet, CORS, login rate limit, rol nazorati serverda |
+| Baza | PostgreSQL (Supabase yoki lokal Docker) |
+| AI | OpenRouter (OpenAI SDK orqali) |
+| Xavfsizlik | JWT, bcrypt, Helmet, CORS, rate limit, rol nazorati serverda |
+| Frontend / mobil | alohida reja: `docs/PLAN_FRONTEND.md`, `docs/PLAN_MOBILE.md` |
 
 ## Talablar
 
-- Node.js 20+ (sinalgan: 24) va npm
-- Docker faqat PostgreSQL ishlatmoqchi bo'lsangiz kerak
+- Node.js 20+ va npm
+- PostgreSQL bazasi (Supabase yoki Docker)
 
 ## O'rnatish va ishga tushirish
 
 ```bash
 npm install
-cp server/.env.example server/.env
+cp .env.example .env
 ```
 
-`server/.env` faylida `JWT_SECRET` ni tasodifiy uzun qiymatga almashtiring:
+`.env` da `DATABASE_URL`, `DIRECT_URL` va `JWT_SECRET` ni to'ldiring (`JWT_SECRET` kamida 32 belgi):
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
-Bazani yaratish va demo ma'lumotlarni yuklash:
+Jadvallarni yaratish va demo ma'lumotlarni yuklash:
 
 ```bash
 npm run db:setup
 ```
 
-Ishga tushirish (server va client birga):
+Ishga tushirish:
 
 ```bash
-npm run dev
+npm run dev      # ishlab chiqish (tsx watch)
+npm run build && npm start   # production
 ```
 
-- Web-ilova: http://localhost:5173
 - API: http://localhost:4000/api
+- Swagger UI: http://localhost:4000/api-docs
+- OpenAPI JSON: http://localhost:4000/api/openapi.json
+
+AI yordamchi uchun `.env` ga `OPENROUTER_API_KEY` (va ixtiyoriy `OPENROUTER_MODEL`) qo'shing. Kalit bo'lmasa `/ai/chat` 503 qaytaradi.
 
 ## Demo login'lar
 
-Parol hammasi uchun `server/.env` dagi `SEED_PASSWORD` qiymati (standart: `.env.example` ga qarang).
+Parol hammasi uchun `.env` dagi `SEED_PASSWORD` qiymati.
 
 | Rol | Email |
 |---|---|
@@ -71,38 +77,40 @@ Demo parolni real muhitda ishlatmang.
 
 ## Testlar va tekshiruv
 
+Testlar **alohida** bazada ishlaydi va uni har safar tozalaydi. `.env` da `TEST_DATABASE_URL` ni asosiy bazadan farqli qilib bering.
+
 ```bash
-npm test                          # backend testlari (vitest + supertest)
-npm run build                     # client: tip tekshiruvi + build
-npm run typecheck -w server       # backend tip tekshiruvi
+npm test          # vitest + supertest
+npm run typecheck # tip tekshiruvi
+npm run check     # ikkalasi
 ```
 
-## PostgreSQL ishlatish
+## Lokal PostgreSQL (Docker)
 
-1. Ildiz papkada `.env` yarating: `POSTGRES_PASSWORD=<kuchli-parol>`
+1. `.env` ga `POSTGRES_PASSWORD=<kuchli-parol>` qo'shing
 2. `docker compose up -d`
-3. `server/prisma/schema.prisma` da `provider = "postgresql"` qiling
-4. `server/.env` da `DATABASE_URL="postgresql://inventrack:<parol>@localhost:5432/inventrack"`
-5. `npm run db:setup`
+3. `.env` da `DATABASE_URL` va `DIRECT_URL` ni `postgresql://inventrack:<parol>@localhost:5432/inventrack` ga qo'ying
+4. `npm run db:setup`
 
 ## Papkalar
 
 ```
-client/        React ilovasi
-server/        Express API, Prisma sxema, seed, testlar
-docs/          Foydalanuvchi qo'llanmasi, reja
-presentation/  Taqdimot (InvenTrack-Pitch.pptx) va uni yaratish skriptlari
+src/            Express API: routes/ (HTTP), services/ (biznes mantiq), schemas.ts (Zod), middleware.ts
+prisma/         schema.prisma va seed.ts
+tests/          API testlari
+docs/           Reja, foydalanuvchi qo'llanmasi
+presentation/   Taqdimot (InvenTrack-Pitch.pptx) va uni yaratish skriptlari
 ```
 
 ## Xavfsizlik eslatmalari
 
 - Parol va kalitlar kodga yozilmaydi, faqat `.env` da turadi (`.env` git'ga kirmaydi).
-- Parollar bcrypt (cost 12) bilan hashlanadi; login urinishlari cheklangan (IP bo'yicha 15 daqiqada 10 ta).
-- Foydalanuvchi roli va faolligi har so'rovda bazadan tekshiriladi.
-- JWT brauzerda `localStorage` da saqlanadi (oddiy variant). Production uchun httpOnly cookie va HTTPS tavsiya etiladi.
-- Production'da `CORS_ORIGIN` ni haqiqiy domen bilan almashtiring.
+- Parollar bcrypt (cost 12) bilan hashlanadi; login urinishlari cheklangan (IP bo'yicha 15 daqiqada 10 ta), AI so'rovlari ham (daqiqada 15 ta).
+- Foydalanuvchi roli va faolligi har so'rovda bazadan tekshiriladi. Parol almashsa, eski tokenlar bekor bo'ladi.
+- Production'da `CORS_ORIGIN` ni haqiqiy domen bilan almashtiring va HTTPS ishlating.
 
-## Hali yo'q
+## Ma'lum cheklovlar
 
-- AI yordamchi (OpenRouter orqali tezkor tahlil): rejalashtirilgan, amalga oshirilmagan.
 - PDF hisobotda faqat lotin harflari to'g'ri chiqadi (standart shrift).
+- `price` va `cost` `Float` turida; holat/rol qiymatlari bazada `String` (Zod tekshiradi).
+- Eksport butun natijani xotiraga oladi; juda katta bazada sahifalash kerak bo'ladi.

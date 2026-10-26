@@ -1,7 +1,7 @@
 import { Router } from "express";
 import type { ZodTypeAny } from "zod";
 import { prisma } from "../db.js";
-import { HttpError, requireRole, validate, wrap } from "../middleware.js";
+import { idParam as idOf, requireRole, validate, wrap } from "../middleware.js";
 import { departmentSchema, roomListQuerySchema, roomSchema, searchQuerySchema, typeSchema } from "../schemas.js";
 import { contains, paginate } from "../services/query.js";
 
@@ -9,11 +9,6 @@ import { contains, paginate } from "../services/query.js";
 function crud(model: "department" | "room" | "equipmentType", schema: ZodTypeAny, listQuery: ZodTypeAny, include?: object) {
   const r = Router();
   const m = prisma[model] as any;
-  const idOf = (v: string) => {
-    const n = Number(v);
-    if (!Number.isInteger(n) || n <= 0) throw new HttpError(400, "Noto'g'ri identifikator");
-    return n;
-  };
   r.get(
     "/",
     validate(listQuery, "query"),

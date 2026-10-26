@@ -1,5 +1,6 @@
 # PostgreSQL ishga tushirish: docker compose up -d
-# Keyin server/prisma/schema.prisma da provider = "postgresql" qiling va server/.env da DATABASE_URL ni yozing.
+# Keyin .env da DATABASE_URL va DIRECT_URL ni shu bazaga yo'naltiring:
+#   postgresql://inventrack:<parol>@localhost:5432/inventrack
 services:
   db:
     image: postgres:16-alpine

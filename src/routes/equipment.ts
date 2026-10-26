@@ -1,7 +1,7 @@
 import { Router } from "express";
 import QRCode from "qrcode";
 import { prisma } from "../db.js";
-import { HttpError, requireRole, validate, wrap } from "../middleware.js";
+import { HttpError, idParam, requireRole, validate, wrap } from "../middleware.js";
 import {
   equipmentCreateSchema, equipmentQuerySchema, equipmentUpdateSchema,
   pageQuerySchema, repairCreateSchema,
@@ -11,12 +11,6 @@ import { buildWhere, equipmentInclude, paginate } from "../services/query.js";
 import { sendToRepair } from "../services/repairs.js";
 
 export const equipmentRouter = Router();
-
-const idParam = (v: string) => {
-  const n = Number(v);
-  if (!Number.isInteger(n) || n <= 0) throw new HttpError(400, "Noto'g'ri identifikator");
-  return n;
-};
 
 // Mas'ul shaxs faqat o'z jihozini ko'ra/o'zgartira oladi
 async function loadVisible(req: any, id: number) {

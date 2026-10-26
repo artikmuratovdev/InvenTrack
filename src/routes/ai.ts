@@ -1,5 +1,6 @@
 import { Router } from "express";
 import OpenAI from "openai";
+import rateLimit from "express-rate-limit";
 import { z } from "zod";
 import { prisma } from "../db.js";
 import { env } from "../env.js";
@@ -9,6 +10,17 @@ import { CONDITIONS, USAGE_STATUSES } from "../constants.js";
 import { CONDITION_LABELS, USAGE_LABELS } from "../services/labels.js";
 
 export const aiRouter = Router();
+
+// Har so'rov pullik OpenRouter'ga ketadi: IP bo'yicha daqiqada 15 ta
+aiRouter.use(
+  rateLimit({
+    windowMs: 60 * 1000,
+    limit: env.isTest ? 1000 : 15,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: "Juda ko'p so'rov. Bir daqiqadan keyin urinib ko'ring" },
+  }),
+);
 
 const bodySchema = z.object({ message: z.string().trim().min(1).max(1000) });
 

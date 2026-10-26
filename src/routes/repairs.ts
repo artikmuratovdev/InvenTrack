@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { prisma } from "../db.js";
-import { HttpError, requireRole, validate, wrap } from "../middleware.js";
+import { HttpError, idParam, requireRole, validate, wrap } from "../middleware.js";
 import { repairListQuerySchema, repairReturnSchema } from "../schemas.js";
 import { returnFromRepair } from "../services/repairs.js";
 
@@ -35,8 +35,7 @@ repairsRouter.patch(
   requireRole("ADMIN", "RESPONSIBLE"),
   validate(repairReturnSchema),
   wrap(async (req, res) => {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id) || id <= 0) throw new HttpError(400, "Noto'g'ri identifikator");
+    const id = idParam(req.params.id);
     if (req.user!.role === "RESPONSIBLE") {
       const r = await prisma.repair.findUnique({ where: { id }, include: { equipment: true } });
       if (!r) throw new HttpError(404, "Ta'mir yozuvi topilmadi");

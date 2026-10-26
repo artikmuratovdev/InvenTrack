@@ -1,18 +1,13 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { prisma } from "../db.js";
-import { HttpError, requireRole, validate, wrap } from "../middleware.js";
+import { HttpError, idParam as idOf, requireRole, validate, wrap } from "../middleware.js";
 import { passwordResetSchema, searchQuerySchema, userCreateSchema, userListQuerySchema, userUpdateSchema } from "../schemas.js";
 import { contains, paginate } from "../services/query.js";
 
 export const usersRouter = Router();
 
 const PUBLIC = { id: true, fullName: true, email: true, role: true, isActive: true, departmentId: true, createdAt: true };
-const idOf = (v: string) => {
-  const n = Number(v);
-  if (!Number.isInteger(n) || n <= 0) throw new HttpError(400, "Noto'g'ri identifikator");
-  return n;
-};
 
 // Mas'ul shaxsni tanlash uchun ro'yxat hamma rolga ochiq, faqat ism (email/rolsiz)
 usersRouter.get(

@@ -5,4 +5,3 @@ dist/
 *.db-journal
 *.log
 presentation/~$*
-dist/

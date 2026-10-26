@@ -1,4 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
+import { createHash } from "node:crypto";
 import jwt from "jsonwebtoken";
 import { Prisma } from "@prisma/client";
 import { ZodError, type ZodTypeAny } from "zod";
@@ -26,11 +27,20 @@ declare global {
   }
 }
 
-export function signToken(user: AuthUser) {
-  return jwt.sign({ sub: user.id, role: user.role }, env.jwtSecret, {
+// Token parol hashiga bog'lanadi: parol almashsa, eski tokenlar darrov bekor bo'ladi
+const pwdStamp = (passwordHash: string) => createHash("sha256").update(passwordHash).digest("hex").slice(0, 16);
+
+export function signToken(user: AuthUser, passwordHash: string) {
+  return jwt.sign({ sub: user.id, role: user.role, pv: pwdStamp(passwordHash) }, env.jwtSecret, {
     expiresIn: env.jwtExpiresIn as jwt.SignOptions["expiresIn"],
   });
 }
+
+export const idParam = (v: string) => {
+  const n = Number(v);
+  if (!Number.isInteger(n) || n <= 0) throw new HttpError(400, "Noto'g'ri identifikator");
+  return n;
+};
 
 export async function authenticate(req: Request, _res: Response, next: NextFunction) {
   try {
@@ -45,6 +55,7 @@ export async function authenticate(req: Request, _res: Response, next: NextFunct
     // Rol va faollik har safar bazadan olinadi: bloklangan foydalanuvchi tokeni darrov kuchini yo'qotadi
     const user = await prisma.user.findUnique({ where: { id: Number(payload.sub) } });
     if (!user || !user.isActive) throw new HttpError(401, "Foydalanuvchi faol emas");
+    if (payload.pv !== pwdStamp(user.passwordHash)) throw new HttpError(401, "Sessiya muddati tugagan, qayta kiring");
     req.user = { id: user.id, role: user.role as Role };
     next();
   } catch (e) {

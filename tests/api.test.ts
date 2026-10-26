@@ -172,3 +172,13 @@ describe("chekka holatlar", () => {
     expect(r.body.message).toBe("Jihoz turi topilmadi");
   });
 });
+
+describe("sessiya", () => {
+  it("parol tiklangach eski token bekor bo'ladi", async () => {
+    const id = (await prisma.user.findUniqueOrThrow({ where: { email: "emp@t.uz" } })).id;
+    expect((await request(app).get("/api/auth/me").set(auth(employee))).status).toBe(200);
+    const r = await request(app).post(`/api/users/${id}/reset-password`).set(auth(admin)).send({ password: "Yangi12345!" });
+    expect(r.status).toBe(200);
+    expect((await request(app).get("/api/auth/me").set(auth(employee))).status).toBe(401);
+  });
+});

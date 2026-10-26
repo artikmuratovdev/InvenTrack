@@ -11,7 +11,8 @@ reportsRouter.get(
   "/dashboard",
   wrap(async (req, res) => {
     const where = buildWhere({}, req.user!);
-    const eqIds = req.user!.role === "RESPONSIBLE" ? { equipment: { responsibleUserId: req.user!.id } } : {};
+    // Jami son, ta'mir va oxirgi o'zgarishlar bir xil jihozlar to'plamidan (arxivsiz, rolga mos) hisoblanadi
+    const eqIds = { equipment: where };
     const [total, byCondition, byUsage, openRepairs, recent] = await Promise.all([
       prisma.equipment.count({ where }),
       prisma.equipment.groupBy({ by: ["condition"], where, _count: { _all: true } }),
